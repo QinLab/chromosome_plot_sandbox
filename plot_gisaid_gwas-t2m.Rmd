@@ -1,6 +1,8 @@
 ---
 title: "test manhattan, umichigan version"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 Based on 
@@ -210,7 +212,7 @@ manhattan.plot<-function(chr, pos, pvalue,
 ```{r}
 list.files()
 tb = read.csv2( "gwas-t2m-meta0613-positions-pq.csv", stringsAsFactors = F)
-tb
+#tb
 ```
 
 
@@ -218,7 +220,7 @@ tb
 tb_cov = read.csv("msa_position_2_ref_position.csv", row.names = 1)
 tb$p = as.numeric(tb$p)
 tb$ref_position = tb_cov$ref_positions[ match(tb$msa_position, tb_cov$msa_positions  )]
-tb$p[tb$p==0] = 1E-99
+tb$p[tb$p==0] = 1E-300
 summary(tb)
 tb$chr=1
 ```
@@ -226,17 +228,13 @@ tb$chr=1
 ```{r}
 # spike 21563   25384
 
-```
-
-
-```{r}
-
 #make annotation factor
 ann <- rep(1, length(tb$p))
-print(ann)
-ann[with(tb, chr==1 & ref_position>=21563 & ref_position< 25384)]<-2
-print(ann)
-ann<-factor(ann, levels=1:2, labels=c("", "spike"))
+#print(ann)
+ann[with(tb, chr==1 & ref_position>=266 & ref_position< 21555)]<-2
+ann[with(tb, chr==1 & ref_position>=21563 & ref_position< 25384)]<-3
+#print(ann)
+ann<-factor(ann, levels=1:3, labels=c("", "ORF1ab", "Spike"))
 
 ```
 
@@ -248,27 +246,3 @@ ann<-factor(ann, levels=1:2, labels=c("", "spike"))
 #draw plot with annotation
 manhattan.plot(tb$chr, tb$ref_position, tb$p, annotate=ann)
 ```
-
-```{r}
-createSampleGwasData<-function(chr.count=1, include.X=F) {
-	chr<-c(); pos<-c()
-	for(i in 1:chr.count) {
-		chr <- c(chr,rep(i, 1000))
-		pos <- c(pos,ceiling(runif(1000)*(chr.count-i+1)*25*1e3))
-	}
-	if(include.X) {
-		chr <- c(chr,rep("X", 1000))
-		pos <- c(pos,ceiling(runif(1000)*5*25*1e3))
-	}
-	pvalue <- runif(length(pos))
-	return(data.frame(chr, pos,pvalue))
-}
-dd<-createSampleGwasData()
-#dd$pvalue[3000] <- 1e-7 #include a significant result
-manhattan.plot(dd$chr, dd$pos, dd$pvalue)
-```
-
-```{r}
-
-```
-
