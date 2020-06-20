@@ -208,6 +208,27 @@ manhattan.plot<-function(chr, pos, pvalue,
 ```
 
 ```{r}
+list.files()
+tb = read.csv2( "gwas-t2m-meta0613-positions-pq.csv", stringsAsFactors = F)
+tb
+```
+
+
+```{r}
+tb_cov = read.csv("msa_position_2_ref_position.csv", row.names = 1)
+tb$p = as.numeric(tb$p)
+tb$ref_position = tb_cov$ref_positions[ match(tb$msa_position, tb_cov$msa_positions  )]
+tb$p[tb$p==0] = 1E-99
+summary(tb)
+```
+
+
+```{r}
+tb$chr=1
+manhattan.plot(tb$chr, tb$ref_position, tb$p)
+```
+
+```{r}
 createSampleGwasData<-function(chr.count=1, include.X=F) {
 	chr<-c(); pos<-c()
 	for(i in 1:chr.count) {
@@ -227,6 +248,6 @@ manhattan.plot(dd$chr, dd$pos, dd$pvalue)
 ```
 
 ```{r}
-dd
+
 ```
 
