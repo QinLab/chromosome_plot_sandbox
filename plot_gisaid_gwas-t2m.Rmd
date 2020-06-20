@@ -220,12 +220,33 @@ tb$p = as.numeric(tb$p)
 tb$ref_position = tb_cov$ref_positions[ match(tb$msa_position, tb_cov$msa_positions  )]
 tb$p[tb$p==0] = 1E-99
 summary(tb)
+tb$chr=1
+```
+
+```{r}
+# spike 21563   25384
+
 ```
 
 
 ```{r}
-tb$chr=1
-manhattan.plot(tb$chr, tb$ref_position, tb$p)
+
+#make annotation factor
+ann <- rep(1, length(tb$p))
+print(ann)
+ann[with(tb, chr==1 & ref_position>=21563 & ref_position< 25384)]<-2
+print(ann)
+ann<-factor(ann, levels=1:2, labels=c("", "spike"))
+
+```
+
+
+```{r}
+#draw plot with annotation
+
+#manhattan.plot(tb$chr, tb$ref_position, tb$p)
+#draw plot with annotation
+manhattan.plot(tb$chr, tb$ref_position, tb$p, annotate=ann)
 ```
 
 ```{r}
